@@ -9,8 +9,8 @@ import SidebarLayout from "@/components/sideBar/SideBarLayout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Meu App",
-  description: "Aplicação protegida",
+  title: "DogTv",
+  description: "Aplicação de gerenciamento de tv",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

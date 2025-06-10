@@ -8,7 +8,6 @@ import Footer from "@/components/footer/Footer";
 import api from "@/services/api";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import NavBar from "@/components/sideBar/SideBar";
 
 interface Cliente {
   id: string;
@@ -25,12 +24,18 @@ interface Tv {
   clientes: Cliente[];
 }
 
+interface Infos {
+  total: number;
+  totaisPago: number;
+  totaisPendente: number;
+}
+
 const TvItem: React.FC<{ tv: Tv }> = ({ tv }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="border border-gray-300 dark:border-gray-700 rounded-lg">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
         className="w-full flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300"
       >
         <span className="text-lg font-semibold text-left text-gray-800 dark:text-gray-100">
@@ -71,8 +76,9 @@ const TvItem: React.FC<{ tv: Tv }> = ({ tv }) => {
                       <span className="w-1/4 break-all">{cliente.email}</span>
                       <span className="w-1/4">{cliente.telefone}</span>
                       <span
-                        className={`w-1/4 font-medium ${cliente.statusPagamento ? "text-green-600" : "text-red-600"
-                          }`}
+                        className={`w-1/4 font-medium ${
+                          cliente.statusPagamento ? "text-green-600" : "text-red-600"
+                        }`}
                       >
                         {cliente.statusPagamento ? "Pago" : "Pendente"}
                       </span>
@@ -95,22 +101,20 @@ const TvItem: React.FC<{ tv: Tv }> = ({ tv }) => {
 const Home: React.FC = () => {
   const { user, loading: authLoading } = useAuth();
   const [tvs, setTvs] = useState<Tv[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [infos, setInfos] = useState<Infos | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [infoLoading, setInfoLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
   useEffect(() => {
-    // Caso o AuthContext ainda esteja verificando ou não haja usuário, não busca as TVs
     if (authLoading) return;
 
-    // Se não vier user do AuthContext, o próprio AuthContext já redirecionou para /login
-    // Então aqui a gente prossegue buscando as TVs
     const fetchTvs = async () => {
       try {
         const response = await api.get<Tv[]>("/tvs/clientes", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
         setTvs(response.data);
       } catch (err: any) {
@@ -121,10 +125,23 @@ const Home: React.FC = () => {
       }
     };
 
+    const fetchInfos = async () => {
+      try {
+        const response = await api.get<Infos>("/clientes/infos", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setInfos(response.data);
+      } catch (err: any) {
+        console.error("Erro ao buscar infos:", err);
+      } finally {
+        setInfoLoading(false);
+      }
+    };
+
+    fetchInfos();
     fetchTvs();
   }, [authLoading, token]);
 
-  // Enquanto o AuthContext estiver carregando (verificando token), mostramos “Carregando...”
   if (authLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
@@ -136,15 +153,55 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
       <main className="flex-grow container mx-auto px-4 py-8">
-        {/* Exibe “Olá, {nomeCompleto}” */}
-        <h1 className="text-3xl font-extraboldtext-gray-900 dark:text-gray-100 mb-4">
-          Olá {user?.nome}
+        {/* Saudações */}
+        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 mb-4">
+          Olá, {user?.nome}
         </h1>
 
-        <h2 className="text-1xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-          Seus clientes:
+        {/* Cards de informações */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          {infoLoading || !infos ? (
+            <>
+              <div className="h-24 bg-white dark:bg-gray-800 rounded-lg shadow animate-pulse" />
+              <div className="h-24 bg-white dark:bg-gray-800 rounded-lg shadow animate-pulse" />
+              <div className="h-24 bg-white dark:bg-gray-800 rounded-lg shadow animate-pulse" />
+            </>
+          ) : (
+            <>
+              <div className="flex flex-col justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Total de Clientes
+                </span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  {infos.total}
+                </span>
+              </div>
+              <div className="flex flex-col justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Clientes Pagos
+                </span>
+                <span className="text-2xl font-bold text-green-600 dark:text-green-400">
+                  {infos.totaisPago}
+                </span>
+              </div>
+              <div className="flex flex-col justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Clientes Pendentes
+                </span>
+                <span className="text-2xl font-bold text-red-600 dark:text-red-400">
+                  {infos.totaisPendente}
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Título da tabela */}
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+          Seus clientes por TV:
         </h2>
 
+        {/* Lista de TVs */}
         {loading ? (
           <p className="text-gray-700 dark:text-gray-300">Carregando lista de TVs...</p>
         ) : error ? (
