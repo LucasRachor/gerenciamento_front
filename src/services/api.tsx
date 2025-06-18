@@ -1,7 +1,17 @@
-import axios from 'axios';
+// src/services/api.ts
+import axios from 'axios'
+import { getTokenFromCookie } from '@/utils/getToken'
 
 const api = axios.create({
-    baseURL: 'http://localhost:3000/api/v1'
-});
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
+})
 
-export default api;
+api.interceptors.request.use((config) => {
+    const token = getTokenFromCookie()
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+})
+
+export default api

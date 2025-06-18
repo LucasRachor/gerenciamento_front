@@ -25,10 +25,11 @@ const LoginPage: React.FC = () => {
     const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
         setApiError(null);
         try {
-
             const response = await api.post("/auth/login", data);
-            localStorage.setItem("token", response.data.token);
-            router.push("/");
+            const token = response.data.token;
+            document.cookie = `token=${token}; Path=/; Max-Age=${60 * 60 * 24}; SameSite=Lax;`;
+            router.push("/status");
+            
         } catch (error: any) {
             console.error("Login error:", error);
             if (error.response && error.response.data) {

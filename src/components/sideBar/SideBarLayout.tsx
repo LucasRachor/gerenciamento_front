@@ -23,7 +23,7 @@ const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
         return <>{children}</>;
     }
 
-    if (pathname === "/login") {
+    if (pathname === "/login" || pathname === "/") {
         return <>{children}</>;
     }
 

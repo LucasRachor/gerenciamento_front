@@ -45,7 +45,7 @@ const NavBar: React.FC<NavBarProps> = ({ onLogout }) => {
             {/* Navigation Links */}
             <nav className="flex-1 px-2 space-y-1 mt-3">
                 <Link
-                    href="/"
+                    href="/status"
                     className="
             flex items-center h-12 px-4 rounded-md 
             text-gray-700 dark:text-gray-200 
