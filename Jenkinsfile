@@ -15,8 +15,8 @@ pipeline {
     stage('Subir com Docker Compose') {
       steps {
         script {
-          sh 'docker-compose down'
-          sh 'docker-compose up --build -d'
+          sh 'docker compose down'
+          sh 'docker compose up --build -d'
         }
       }
     }
