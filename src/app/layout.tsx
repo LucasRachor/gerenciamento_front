@@ -8,7 +8,7 @@ import SidebarLayout from "@/components/sideBar/SideBarLayout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "DogTv",
+  title: "ClipTv",
   description: "Aplicação de gerenciamento de tv",
 };
 

@@ -71,14 +71,14 @@ const TvItem: React.FC<{ tv: Tv }> = ({ tv }) => {
                       key={cliente.id}
                       className="flex text-sm text-gray-800 dark:text-gray-100 py-2 border-b border-gray-200 dark:border-gray-700"
                     >
-                      <span className="w-1/4 font-bold">{cliente.nome}</span>
+                      <span className="w-1/4 font-bold">{cliente.nome.toUpperCase()}</span>
                       <span className="w-1/4 break-all">{cliente.email}</span>
                       <span className="w-1/4">{cliente.telefone}</span>
                       <span
                         className={`w-1/4 font-medium ${cliente.statusPagamento ? "text-green-600" : "text-red-600"
                           }`}
                       >
-                        {cliente.statusPagamento ? "Pago" : "Pendente"}
+                        {cliente.statusPagamento ? "PAGO" : "PENDENTE"}
                       </span>
                     </li>
                   ))}
@@ -102,6 +102,7 @@ const StatusPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [infoLoading, setInfoLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const nome = localStorage.getItem('nome')
 
   useEffect(() => {
 
@@ -137,7 +138,7 @@ const StatusPage: React.FC = () => {
       <main className="flex-grow container mx-auto px-4 py-8">
         {/* Saudações */}
         <h1 className="text-3xl font-extrabold text-gray-900 dark:text-gray-100 mb-4">
-          Olá,
+          Olá, {nome}
         </h1>
 
         {/* Cards de informações */}
@@ -160,7 +161,7 @@ const StatusPage: React.FC = () => {
               </div>
               <div className="flex flex-col justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Clientes Pagos
+                  Planos Pagos:
                 </span>
                 <span className="text-2xl font-bold text-green-600 dark:text-green-400">
                   {infos.totaisPago}
@@ -168,7 +169,7 @@ const StatusPage: React.FC = () => {
               </div>
               <div className="flex flex-col justify-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
                 <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                  Clientes Pendentes
+                  Planos Pendentes:
                 </span>
                 <span className="text-2xl font-bold text-red-600 dark:text-red-400">
                   {infos.totaisPendente}

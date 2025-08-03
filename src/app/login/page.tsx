@@ -28,8 +28,9 @@ const LoginPage: React.FC = () => {
             const response = await api.post("/auth/login", data);
             const token = response.data.token;
             document.cookie = `token=${token}; Path=/; Max-Age=${60 * 60 * 24}; SameSite=Lax;`;
+            localStorage.setItem('nome', response.data.nome);
             router.push("/status");
-            
+
         } catch (error: any) {
             console.error("Login error:", error);
             if (error.response && error.response.data) {

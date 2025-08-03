@@ -273,7 +273,7 @@ const ClientesPage: React.FC = () => {
                                                     className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                                 >
                                                     <td className="px-4 py-3 text-sm text-gray-800 dark:text-gray-100">
-                                                        {cliente.nomeCompleto}
+                                                        {cliente.nomeCompleto.toUpperCase()}
                                                     </td>
                                                     <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 break-all">
                                                         {cliente.email}
@@ -282,7 +282,7 @@ const ClientesPage: React.FC = () => {
                                                         {cliente.telefone}
                                                     </td>
                                                     <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
-                                                        {cliente.genero}
+                                                        {cliente.genero.toUpperCase()}
                                                     </td>
                                                     <td className="px-4 py-3 text-sm font-medium">
                                                         <span
@@ -292,12 +292,12 @@ const ClientesPage: React.FC = () => {
                                                                     : "text-red-600"
                                                             }
                                                         >
-                                                            {cliente.statusPagamento ? "Pago" : "Pendente"}
+                                                            {cliente.statusPagamento ? "PAGO" : "PENDENTE"}
                                                         </span>
                                                     </td>
                                                     <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
                                                         {/* Uso de optional chaining e fallback */}
-                                                        {cliente.endereco?.cidade ?? "—"}
+                                                        {cliente.endereco?.cidade.toUpperCase() ?? "—"}
                                                     </td>
                                                     <td className="px-4 py-3 text-sm text-center">
                                                         <button

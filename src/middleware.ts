@@ -12,14 +12,12 @@ export async function middleware(request: NextRequest) {
 
     try {
         // Chamada ao seu backend para verificar o token
-        const res = await fetch(`http://localhost:3000/api/v1/auth/verificar`, {
+        const res = await fetch(`http://localhost:3001/api/v1/auth/verificar`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         })
-
-        console.log(res)
 
         if (!res.ok) {
             return NextResponse.redirect(new URL('/login', request.url))
